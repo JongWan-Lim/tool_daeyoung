@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>행복철물 | 동네 철물점</title>
+<meta name="description" content="행복철물 - 각종 공구, 전기·배관 자재, 열쇠 복사까지. 오시는 길과 영업시간을 확인하세요.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔧</text></svg>">
+
+<style>
+  /* =========================================================
+     이 파일 안에서 꼭 확인해야 할 두 곳
+     1) 아래 <script id="site-config"> 안의 CONFIG 객체 (실제 가게 정보로 교체)
+     2) "사진 자리" 라고 주석 달린 .photo-placeholder 요소들 (나중에 사진으로 교체)
+     ========================================================= */
+
+  :root{
+    --steel-900:#1f2933;
+    --steel-800:#2b3a45;
+    --steel-700:#3e4c59;
+    --steel-100:#f3f5f6;
+    --steel-50:#fafbfc;
+    --orange-600:#d9540a;
+    --orange-500:#f2711c;
+    --orange-100:#fdece0;
+    --white:#ffffff;
+    --line:#e4e8eb;
+    --radius:14px;
+    --shadow:0 4px 16px rgba(31,41,51,0.08);
+    --max-w:1080px;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",-apple-system,BlinkMacSystemFont,sans-serif;
+    color:var(--steel-900);
+    background:var(--steel-50);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  img{max-width:100%;display:block;}
+  a{color:inherit;}
+  .wrap{max-width:var(--max-w);margin:0 auto;padding:0 20px;}
+  section{padding:64px 0;}
+  h1,h2,h3{line-height:1.3;margin:0 0 12px;}
+  h2{font-size:clamp(22px,4vw,30px);}
+  .eyebrow{
+    display:inline-block;
+    font-size:13px;
+    font-weight:700;
+    color:var(--orange-600);
+    background:var(--orange-100);
+    padding:4px 10px;
+    border-radius:999px;
+    margin-bottom:10px;
+    letter-spacing:.02em;
+  }
+  .section-desc{color:var(--steel-700);max-width:640px;margin:0 0 32px;}
+
+  /* ---------- 헤더 ---------- */
+  header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(255,255,255,.92);
+    backdrop-filter:saturate(180%) blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{
+    max-width:var(--max-w);margin:0 auto;padding:14px 20px;
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+  }
+  .brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:18px;white-space:nowrap;}
+  .brand .logo-badge{
+    width:34px;height:34px;border-radius:9px;
+    background:var(--orange-500);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:18px;flex:none;
+  }
+  .nav-links{display:flex;gap:18px;font-size:14px;font-weight:600;color:var(--steel-700);}
+  .nav-links a{text-decoration:none;}
+  .nav-links a:hover{color:var(--orange-600);}
+  .call-btn{
+    display:inline-flex;align-items:center;gap:6px;
+    background:var(--orange-500);color:#fff;
+    padding:9px 16px;border-radius:999px;
+    font-weight:700;font-size:14px;text-decoration:none;white-space:nowrap;
+    box-shadow:var(--shadow);
+  }
+  .call-btn:hover{background:var(--orange-600);}
+  @media (max-width:640px){
+    .nav-links{display:none;}
+  }
+
+  /* ---------- 히어로 ---------- */
+  .hero{padding:48px 0 56px;}
+  .hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;}
+  @media (max-width:800px){ .hero-grid{grid-template-columns:1fr;} }
+  .hero h1{font-size:clamp(28px,5vw,42px);}
+  .hero p.lead{font-size:17px;color:var(--steel-700);max-width:520px;}
+  .btn-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px;}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:13px 22px;border-radius:12px;font-weight:700;font-size:15px;
+    text-decoration:none;border:2px solid transparent;
+  }
+  .btn-primary{background:var(--orange-500);color:#fff;box-shadow:var(--shadow);}
+  .btn-primary:hover{background:var(--orange-600);}
+  .btn-outline{background:#fff;color:var(--steel-900);border-color:var(--line);}
+  .btn-outline:hover{border-color:var(--orange-500);color:var(--orange-600);}
+
+  /* 사진 자리 표시용 placeholder 박스 - 실제 사진 준비되면
+     <img src="images/파일명.jpg" alt="설명"> 으로 교체하면 됩니다 */
+  .photo-placeholder{
+    background:repeating-linear-gradient(135deg,var(--steel-100),var(--steel-100) 10px,#eef1f3 10px,#eef1f3 20px);
+    border:1px dashed #c7ced3;
+    border-radius:var(--radius);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    color:#8a97a1;font-size:13px;font-weight:600;gap:6px;text-align:center;
+    min-height:200px;
+  }
+  .photo-placeholder .icon{font-size:32px;}
+  .hero-photo.photo-placeholder{min-height:280px;}
+
+  /* ---------- 소개 강점 ---------- */
+  .badges{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:8px;}
+  @media (max-width:640px){ .badges{grid-template-columns:1fr;} }
+  .badge-card{
+    background:#fff;border:1px solid var(--line);border-radius:var(--radius);
+    padding:20px;box-shadow:var(--shadow);
+  }
+  .badge-card .icon{font-size:26px;margin-bottom:8px;}
+  .badge-card h3{font-size:16px;margin-bottom:4px;}
+  .badge-card p{font-size:14px;color:var(--steel-700);margin:0;}
+
+  /* ---------- 취급 품목 ---------- */
+  .products{background:var(--white);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .product-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
+  @media (max-width:900px){ .product-grid{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:480px){ .product-grid{grid-template-columns:1fr;} }
+  .product-card{
+    background:var(--steel-50);border:1px solid var(--line);border-radius:var(--radius);
+    overflow:hidden;transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .product-card:hover{transform:translateY(-3px);box-shadow:var(--shadow);}
+  .product-card .photo-placeholder{border-radius:0;min-height:120px;border:none;border-bottom:1px dashed #c7ced3;}
+  .product-card-body{padding:16px;}
+  .product-card h3{font-size:16px;display:flex;align-items:center;gap:8px;}
+  .product-card p{font-size:13.5px;color:var(--steel-700);margin:0;}
+
+  /* ---------- 기타 유용한 정보 ---------- */
+  .extra-list{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+  @media (max-width:640px){ .extra-list{grid-template-columns:1fr;} }
+  .extra-item{
+    display:flex;align-items:flex-start;gap:12px;
+    background:#fff;border:1px solid var(--line);border-radius:var(--radius);
+    padding:16px 18px;
+  }
+  .extra-item .icon{font-size:20px;flex:none;}
+  .extra-item p{margin:0;font-size:14.5px;color:var(--steel-800);}
+
+  /* ---------- 오시는 길 / 연락처 ---------- */
+  .visit{background:var(--steel-900);color:#fff;}
+  .visit .eyebrow{background:rgba(242,113,28,.18);color:#ffb27a;}
+  .visit .section-desc{color:#c7d0d6;}
+  .visit-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;}
+  @media (max-width:800px){ .visit-grid{grid-template-columns:1fr;} }
+  .info-row{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.12);}
+  .info-row:last-child{border-bottom:none;}
+  .info-row .label{width:88px;flex:none;color:#9fb0ba;font-weight:700;font-size:14px;}
+  .info-row .value{font-size:15px;}
+  .info-row a{text-decoration:underline;text-underline-offset:3px;}
+  .hours-table{width:100%;border-collapse:collapse;font-size:14.5px;}
+  .hours-table td{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.1);}
+  .hours-table td:first-child{color:#9fb0ba;width:110px;}
+  .map-placeholder{
+    background:rgba(255,255,255,.05);border:1px dashed rgba(255,255,255,.25);
+    border-radius:var(--radius);min-height:220px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:10px;color:#c7d0d6;font-size:13.5px;text-align:center;padding:24px;
+  }
+  .map-placeholder .icon{font-size:30px;}
+
+  footer{background:var(--steel-800);color:#c7d0d6;font-size:13px;padding:28px 0;}
+  .footer-grid{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;align-items:center;}
+
+  .float-call{
+    position:fixed;right:18px;bottom:18px;z-index:60;
+    background:var(--orange-500);color:#fff;
+    width:56px;height:56px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:24px;text-decoration:none;box-shadow:0 6px 20px rgba(217,84,10,.4);
+  }
+  @media (min-width:641px){ .float-call{display:none;} }
+</style>
+</head>
+<body>
+
+<!-- =========================================================
+     사이트 정보(CONFIG) : 여기 값들만 바꾸면 화면 전체가 바뀝니다.
+     - storeName, tagline, phone, address 등 실제 정보로 교체하세요.
+     - naverMapUrl 은 네이버 지도에서 우리 가게를 검색한 뒤 주소창 URL을 그대로 붙여넣으면 됩니다.
+     - products, extras 배열은 항목을 추가/삭제/수정할 수 있습니다.
+     ========================================================= -->
+<script id="site-config">
+  const CONFIG = {
+    storeName: "행복철물",
+    tagline: "공구부터 열쇠 복사까지, 동네 철물점이 다 해결해 드립니다.",
+    phone: "010-0000-0000",
+    phoneDisplay: "010-0000-0000",
+    address: "○○시 ○○구 ○○로 12길 34 (건물명, 1층)",
+    naverMapUrl: "https://map.naver.com/p/search/행복철물",
+    hours: [
+      { day: "평일 (월~금)", time: "09:00 - 19:00" },
+      { day: "토요일", time: "09:00 - 18:00" },
+      { day: "일요일 · 공휴일", time: "휴무 (전화 문의 가능)" },
+    ],
+    badges: [
+      { icon: "🛠️", title: "30년 경력", desc: "오랜 경험으로 정확한 제품 추천" },
+      { icon: "🔑", title: "열쇠 복사", desc: "각종 열쇠 · 도어락 즉석 복사" },
+      { icon: "🚗", title: "매장 앞 주차", desc: "짐 싣고 내리기 편한 위치" },
+    ],
+    products: [
+      { icon: "🔩", name: "공구 / 전동공구", desc: "드릴, 그라인더, 렌치, 드라이버 세트 등" },
+      { icon: "💡", name: "전기자재", desc: "배선, 콘센트, 스위치, 조명기구" },
+      { icon: "🚰", name: "배관 / 수도자재", desc: "파이프, 밸브, 호스, 수전 부속" },
+      { icon: "🎨", name: "페인트 / 도장용품", desc: "페인트, 붓, 롤러, 시너, 마스킹테이프" },
+      { icon: "🔒", name: "잠금장치 / 열쇠", desc: "도어락, 자물쇠, 각종 열쇠 복사" },
+      { icon: "🌱", name: "원예 / 농자재", desc: "삽, 호미, 비료, 화분, 모종삽" },
+      { icon: "🧹", name: "생활잡화", desc: "청소용품, 수납·정리용품" },
+      { icon: "🧰", name: "기타 자재", desc: "찾는 물건이 안 보이면 편하게 물어보세요" },
+    ],
+    extras: [
+      { icon: "🅿️", text: "매장 앞 단기 주차 가능합니다." },
+      { icon: "☎️", text: "재고 확인은 방문 전 전화 주시면 더 정확해요." },
+      { icon: "🧾", text: "카드 결제 · 현금영수증 모두 가능합니다." },
+      { icon: "🚚", text: "대량 구매 시 인근 지역 배달 상담 가능합니다." },
+    ],
+  };
+</script>
+
+<header>
+  <div class="nav">
+    <div class="brand">
+      <span class="logo-badge">🔧</span>
+      <span id="brand-name">행복철물</span>
+    </div>
+    <nav class="nav-links">
+      <a href="#products">취급 품목</a>
+      <a href="#extra">이용 안내</a>
+      <a href="#visit">오시는 길</a>
+    </nav>
+    <a class="call-btn" id="header-call" href="tel:01000000000">📞 전화하기</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">동네 철물점</span>
+      <h1 id="hero-name">행복철물</h1>
+      <p class="lead" id="hero-tagline">공구부터 열쇠 복사까지, 동네 철물점이 다 해결해 드립니다.</p>
+      <div class="btn-row">
+        <a class="btn btn-primary" id="hero-call" href="tel:01000000000">📞 전화 문의</a>
+        <a class="btn btn-outline" id="hero-map" href="#" target="_blank" rel="noopener">📍 네이버 지도에서 길찾기</a>
+      </div>
+    </div>
+    <!-- 사진 자리: 가게 대표 사진 준비되면 아래 div를
+         <img src="images/store-front.jpg" alt="행복철물 매장 전경"> 로 교체하세요 -->
+    <div class="photo-placeholder hero-photo">
+      <span class="icon">📷</span>
+      <span>매장 대표 사진 자리<br>(사진 촬영 후 교체)</span>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="wrap">
+    <span class="eyebrow">이런 점이 다릅니다</span>
+    <h2>믿고 찾아주시는 이유</h2>
+    <div class="badges" id="badge-grid"></div>
+  </div>
+</section>
+
+<section id="products" class="products">
+  <div class="wrap">
+    <span class="eyebrow">취급 품목</span>
+    <h2>이런 물건들을 판매해요</h2>
+    <p class="section-desc">아래 목록에 없는 물건도 대부분 취급하고 있으니, 편하게 전화나 방문으로 문의해 주세요.</p>
+    <div class="product-grid" id="product-grid"></div>
+  </div>
+</section>
+
+<section id="extra">
+  <div class="wrap">
+    <span class="eyebrow">이용 안내</span>
+    <h2>알아두면 좋은 정보</h2>
+    <div class="extra-list" id="extra-grid"></div>
+  </div>
+</section>
+
+<section id="visit" class="visit">
+  <div class="wrap">
+    <span class="eyebrow">오시는 길</span>
+    <h2>매장 위치 &amp; 연락처</h2>
+    <p class="section-desc">전화 주시면 더 빠르게 안내해 드립니다.</p>
+    <div class="visit-grid">
+      <div>
+        <div class="info-row">
+          <div class="label">주소</div>
+          <div class="value" id="visit-address">○○시 ○○구 ○○로 12길 34 (건물명, 1층)</div>
+        </div>
+        <div class="info-row">
+          <div class="label">전화</div>
+          <div class="value"><a id="visit-phone" href="tel:01000000000">010-0000-0000</a></div>
+        </div>
+        <div class="info-row">
+          <div class="label">영업시간</div>
+          <div class="value">
+            <table class="hours-table" id="hours-table"></table>
+          </div>
+        </div>
+        <div class="btn-row">
+          <a class="btn btn-primary" id="visit-map" href="#" target="_blank" rel="noopener">📍 네이버 지도에서 보기</a>
+        </div>
+      </div>
+      <!-- 지도 자리: 네이버 지도/카카오맵 API 키를 발급받으면
+           이 위치에 실제 지도를 embed 할 수 있습니다 (README 참고) -->
+      <div class="map-placeholder">
+        <span class="icon">🗺️</span>
+        <span>실제 지도는 나중에 이 자리에 넣을 수 있어요.<br>지금은 위 버튼으로 네이버 지도 연결됩니다.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap footer-grid">
+    <span id="footer-name">© 2026 행복철물</span>
+    <span id="footer-address">○○시 ○○구 ○○로 12길 34</span>
+    <span id="footer-phone">010-0000-0000</span>
+  </div>
+</footer>
+
+<a class="float-call" id="float-call" href="tel:01000000000" aria-label="전화 걸기">📞</a>
+
+<script>
+  // CONFIG 값을 실제 화면에 채워 넣는 부분입니다. 보통은 이 아래 스크립트를 건드릴 필요가 없습니다.
+  const telHref = "tel:" + CONFIG.phone.replace(/[^0-9+]/g, "");
+
+  document.getElementById("brand-name").textContent = CONFIG.storeName;
+  document.getElementById("hero-name").textContent = CONFIG.storeName;
+  document.getElementById("hero-tagline").textContent = CONFIG.tagline;
+  document.getElementById("visit-address").textContent = CONFIG.address;
+  document.getElementById("footer-address").textContent = CONFIG.address;
+  document.getElementById("footer-name").textContent = "© " + new Date().getFullYear() + " " + CONFIG.storeName;
+
+  document.getElementById("visit-phone").textContent = CONFIG.phoneDisplay;
+  document.getElementById("footer-phone").textContent = CONFIG.phoneDisplay;
+
+  [ "header-call", "hero-call", "visit-phone", "float-call" ].forEach(id => {
+    document.getElementById(id).setAttribute("href", telHref);
+  });
+
+  document.getElementById("hero-map").setAttribute("href", CONFIG.naverMapUrl);
+  document.getElementById("visit-map").setAttribute("href", CONFIG.naverMapUrl);
+
+  document.getElementById("badge-grid").innerHTML = CONFIG.badges.map(b => `
+    <div class="badge-card">
+      <div class="icon">${b.icon}</div>
+      <h3>${b.title}</h3>
+      <p>${b.desc}</p>
+    </div>
+  `).join("");
+
+  // 상품 카드의 사진 자리도 <div class="photo-placeholder">...</div> 를
+  // <img src="images/파일명.jpg" alt="설명"> 으로 바꾸면 실제 사진으로 교체됩니다.
+  document.getElementById("product-grid").innerHTML = CONFIG.products.map(p => `
+    <div class="product-card">
+      <div class="photo-placeholder">
+        <span class="icon">${p.icon}</span>
+        <span>사진 자리</span>
+      </div>
+      <div class="product-card-body">
+        <h3>${p.name}</h3>
+        <p>${p.desc}</p>
+      </div>
+    </div>
+  `).join("");
+
+  document.getElementById("extra-grid").innerHTML = CONFIG.extras.map(e => `
+    <div class="extra-item">
+      <span class="icon">${e.icon}</span>
+      <p>${e.text}</p>
+    </div>
+  `).join("");
+
+  document.getElementById("hours-table").innerHTML = CONFIG.hours.map(h => `
+    <tr><td>${h.day}</td><td>${h.time}</td></tr>
+  `).join("");
+</script>
+
+</body>
+</html>
