@@ -143,11 +143,40 @@
     overflow:hidden;transition:transform .15s ease, box-shadow .15s ease;
   }
   .product-card:hover{transform:translateY(-3px);box-shadow:var(--shadow);}
+  .product-card[role="button"]{cursor:pointer;}
+  .product-card[role="button"]:focus-visible{outline:2px solid var(--orange-500);outline-offset:2px;}
   .product-card .photo-placeholder{border-radius:0;min-height:120px;border:none;border-bottom:1px dashed #c7ced3;}
+  .product-photo-wrap{position:relative;}
   .product-card .product-photo{width:100%;height:120px;object-fit:cover;display:block;}
+  .photo-count-badge{
+    position:absolute;bottom:8px;right:8px;
+    background:rgba(31,41,51,.75);color:#fff;font-size:11px;font-weight:700;
+    padding:4px 9px;border-radius:999px;
+  }
   .product-card-body{padding:16px;}
   .product-card h3{font-size:16px;display:flex;align-items:center;gap:8px;}
   .product-card p{font-size:13.5px;color:var(--steel-700);margin:0;}
+
+  /* ---------- 품목 사진 갤러리 모달 ---------- */
+  .gallery-modal{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;}
+  .gallery-modal[hidden]{display:none;}
+  .gallery-modal-backdrop{position:absolute;inset:0;background:rgba(15,20,25,.72);}
+  .gallery-modal-box{
+    position:relative;background:#fff;border-radius:var(--radius);
+    max-width:720px;width:100%;max-height:85vh;overflow:auto;padding:24px;
+    box-shadow:0 20px 60px rgba(0,0,0,.35);
+  }
+  .gallery-modal-box h3{margin:0 0 16px;padding-right:32px;}
+  .gallery-modal-close{
+    position:absolute;top:14px;right:14px;width:32px;height:32px;border:none;border-radius:50%;
+    background:var(--steel-100);font-size:16px;cursor:pointer;color:var(--steel-800);
+  }
+  .gallery-modal-close:hover{background:var(--line);}
+  .gallery-modal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+  @media (max-width:560px){ .gallery-modal-grid{grid-template-columns:repeat(2,1fr);} }
+  .gallery-modal-grid a{display:block;border-radius:10px;overflow:hidden;}
+  .gallery-modal-grid img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;transition:transform .15s ease;}
+  .gallery-modal-grid a:hover img{transform:scale(1.04);}
 
   /* ---------- 기타 유용한 정보 ---------- */
   .extra-list{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
@@ -226,7 +255,7 @@
       { icon: "🚗", title: "매장 앞 주차", desc: "짐 싣고 내리기 편한 위치" },
     ],
     products: [
-      { icon: "🔩", name: "공구 / 전동공구", desc: "드릴, 그라인더, 렌치, 드라이버 세트 등", photo: "images/drill.jpg" },
+      { icon: "🔩", name: "공구 / 전동공구", desc: "드릴, 그라인더, 렌치, 드라이버 세트 등", gallery: ["images/drill.jpg"] },
       { icon: "💡", name: "전기자재", desc: "배선, 콘센트, 스위치, 조명기구" },
       { icon: "🚰", name: "배관 / 수도자재", desc: "파이프, 밸브, 호스, 수전 부속" },
       { icon: "🎨", name: "페인트 / 도장용품", desc: "페인트, 붓, 롤러, 시너, 마스킹테이프" },
@@ -343,6 +372,15 @@
 
 <a class="float-call" id="float-call" href="tel:01000000000" aria-label="전화 걸기">📞</a>
 
+<div id="gallery-modal" class="gallery-modal" hidden>
+  <div class="gallery-modal-backdrop" data-close="1"></div>
+  <div class="gallery-modal-box" role="dialog" aria-modal="true" aria-labelledby="gallery-modal-title">
+    <button type="button" class="gallery-modal-close" aria-label="닫기">✕</button>
+    <h3 id="gallery-modal-title"></h3>
+    <div class="gallery-modal-grid" id="gallery-modal-grid"></div>
+  </div>
+</div>
+
 <script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=ifngxdc762&submodules=geocoder"></script>
 
 <script>
@@ -374,22 +412,64 @@
     </div>
   `).join("");
 
-  // 상품 카드의 사진 자리도 <div class="photo-placeholder">...</div> 를
-  // <img src="images/파일명.jpg" alt="설명"> 으로 바꾸면 실제 사진으로 교체됩니다.
-  document.getElementById("product-grid").innerHTML = CONFIG.products.map(p => `
-    <div class="product-card">
-      ${p.photo
-        ? `<img class="product-photo" src="${p.photo}" alt="${p.name}">`
-        : `<div class="photo-placeholder">
-            <span class="icon">${p.icon}</span>
-            <span>사진 자리</span>
-          </div>`}
+  // 상품 카드: 품목마다 gallery 배열(사진 여러 장)을 넣으면
+  // 대표 사진(첫 장)이 카드에 뜨고, 클릭하면 그 품목의 사진들을 그리드로 모아 보여줍니다.
+  // 사진이 없는 품목은 기존처럼 "사진 자리" placeholder가 그대로 나옵니다.
+  document.getElementById("product-grid").innerHTML = CONFIG.products.map((p, i) => {
+    var photos = p.gallery && p.gallery.length ? p.gallery : null;
+    var clickable = photos ? `data-gallery-index="${i}" role="button" tabindex="0"` : "";
+    var media = photos
+      ? `<div class="product-photo-wrap">
+          <img class="product-photo" src="${photos[0]}" alt="${p.name}">
+          <span class="photo-count-badge">${photos.length > 1 ? "+" + (photos.length - 1) + "장 더보기" : "사진 보기"}</span>
+        </div>`
+      : `<div class="photo-placeholder">
+          <span class="icon">${p.icon}</span>
+          <span>사진 자리</span>
+        </div>`;
+    return `
+    <div class="product-card" ${clickable}>
+      ${media}
       <div class="product-card-body">
         <h3>${p.name}</h3>
         <p>${p.desc}</p>
       </div>
     </div>
-  `).join("");
+  `;
+  }).join("");
+
+  // 카드 클릭/키보드(enter, space) -> 그 품목의 사진 갤러리 모달 열기
+  function openGallery(index) {
+    var p = CONFIG.products[index];
+    if (!p || !p.gallery || !p.gallery.length) return;
+    document.getElementById("gallery-modal-title").textContent = p.name;
+    document.getElementById("gallery-modal-grid").innerHTML = p.gallery.map(src => `
+      <a href="${src}" target="_blank" rel="noopener"><img src="${src}" alt="${p.name}"></a>
+    `).join("");
+    document.getElementById("gallery-modal").hidden = false;
+    document.body.style.overflow = "hidden";
+  }
+  function closeGallery() {
+    document.getElementById("gallery-modal").hidden = true;
+    document.body.style.overflow = "";
+  }
+  document.querySelectorAll('.product-card[data-gallery-index]').forEach(function (card) {
+    card.addEventListener("click", function () {
+      openGallery(Number(card.dataset.galleryIndex));
+    });
+    card.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        openGallery(Number(card.dataset.galleryIndex));
+      }
+    });
+  });
+  document.getElementById("gallery-modal").addEventListener("click", function (e) {
+    if (e.target.dataset.close || e.target.classList.contains("gallery-modal-close")) closeGallery();
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") closeGallery();
+  });
 
   document.getElementById("extra-grid").innerHTML = CONFIG.extras.map(e => `
     <div class="extra-item">
