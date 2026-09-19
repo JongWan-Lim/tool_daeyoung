@@ -126,7 +126,8 @@
   img.hero-photo{width:100%;height:280px;object-fit:cover;border-radius:var(--radius);box-shadow:var(--shadow);}
 
   /* ---------- 소개 강점 ---------- */
-  .badges{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:8px;}
+  .badges{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:8px;}
+  @media (max-width:900px){ .badges{grid-template-columns:repeat(2,1fr);} }
   @media (max-width:640px){ .badges{grid-template-columns:1fr;} }
   .badge-card{
     background:#fff;border:1px solid var(--line);border-radius:var(--radius);
@@ -268,6 +269,7 @@
       { title: "30년 경력", desc: "오랜 경험으로 정확한 제품과 해결책을 추천해드립니다." },
       { title: "판매부터 출장까지", desc: "공구 판매는 물론 수리·임대·방문 시공까지 한 번에 해결됩니다." },
       { title: "매장 앞 주차", desc: "짐 싣고 내리기 편한 위치입니다." },
+      { title: "서일대 도보권", desc: "등하교길에 편하게 들러 필요한 걸 구하실 수 있어요." },
     ],
     services: [
       { name: "공구 수리", desc: "고장난 전동공구, 웬만하면 직접 고쳐드립니다." },
