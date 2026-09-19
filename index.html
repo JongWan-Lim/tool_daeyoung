@@ -120,6 +120,7 @@
   }
   .photo-placeholder .icon{font-size:32px;}
   .hero-photo.photo-placeholder{min-height:280px;}
+  img.hero-photo{width:100%;height:280px;object-fit:cover;border-radius:var(--radius);box-shadow:var(--shadow);}
 
   /* ---------- 소개 강점 ---------- */
   .badges{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:8px;}
@@ -143,6 +144,7 @@
   }
   .product-card:hover{transform:translateY(-3px);box-shadow:var(--shadow);}
   .product-card .photo-placeholder{border-radius:0;min-height:120px;border:none;border-bottom:1px dashed #c7ced3;}
+  .product-card .product-photo{width:100%;height:120px;object-fit:cover;display:block;}
   .product-card-body{padding:16px;}
   .product-card h3{font-size:16px;display:flex;align-items:center;gap:8px;}
   .product-card p{font-size:13.5px;color:var(--steel-700);margin:0;}
@@ -224,7 +226,7 @@
       { icon: "🚗", title: "매장 앞 주차", desc: "짐 싣고 내리기 편한 위치" },
     ],
     products: [
-      { icon: "🔩", name: "공구 / 전동공구", desc: "드릴, 그라인더, 렌치, 드라이버 세트 등" },
+      { icon: "🔩", name: "공구 / 전동공구", desc: "드릴, 그라인더, 렌치, 드라이버 세트 등", photo: "images/drill.jpg" },
       { icon: "💡", name: "전기자재", desc: "배선, 콘센트, 스위치, 조명기구" },
       { icon: "🚰", name: "배관 / 수도자재", desc: "파이프, 밸브, 호스, 수전 부속" },
       { icon: "🎨", name: "페인트 / 도장용품", desc: "페인트, 붓, 롤러, 시너, 마스킹테이프" },
@@ -268,12 +270,7 @@
         <a class="btn btn-outline" id="hero-map" href="#" target="_blank" rel="noopener">📍 네이버 지도에서 길찾기</a>
       </div>
     </div>
-    <!-- 사진 자리: 가게 대표 사진 준비되면 아래 div를
-         <img src="images/store-front.jpg" alt="행복철물 매장 전경"> 로 교체하세요 -->
-    <div class="photo-placeholder hero-photo">
-      <span class="icon">📷</span>
-      <span>매장 대표 사진 자리<br>(사진 촬영 후 교체)</span>
-    </div>
+    <img class="hero-photo" src="images/front.jpg" alt="대영공구철물백화점 매장 전경">
   </div>
 </section>
 
@@ -381,10 +378,12 @@
   // <img src="images/파일명.jpg" alt="설명"> 으로 바꾸면 실제 사진으로 교체됩니다.
   document.getElementById("product-grid").innerHTML = CONFIG.products.map(p => `
     <div class="product-card">
-      <div class="photo-placeholder">
-        <span class="icon">${p.icon}</span>
-        <span>사진 자리</span>
-      </div>
+      ${p.photo
+        ? `<img class="product-photo" src="${p.photo}" alt="${p.name}">`
+        : `<div class="photo-placeholder">
+            <span class="icon">${p.icon}</span>
+            <span>사진 자리</span>
+          </div>`}
       <div class="product-card-body">
         <h3>${p.name}</h3>
         <p>${p.desc}</p>
