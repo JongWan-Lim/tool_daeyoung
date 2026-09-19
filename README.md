@@ -58,10 +58,19 @@ const CONFIG = {
    <img class="hero-photo" src="images/store-front.jpg" alt="행복철물 매장 전경">
    ```
 
-3. 취급 품목 카드 사진은 JS의 `product-grid` 렌더링 부분에서
-   `<div class="photo-placeholder">...</div>` 를
-   `<img src="images/공구.jpg" alt="공구">` 형태로 바꾸면 됩니다.
-   (품목이 8개면 사진도 8장까지 준비하면 좋고, 일부만 있어도 됩니다.)
+3. 취급 품목 카드 사진은 `CONFIG.products` 배열에서 해당 품목에
+   `gallery` 배열을 추가하면 됩니다. HTML은 건드릴 필요 없습니다.
+
+   ```js
+   { icon: "🔩", name: "공구 / 전동공구", desc: "드릴, 그라인더, 렌치, 드라이버 세트 등",
+     gallery: ["images/drill.jpg", "images/grinder.jpg", "images/wrench.jpg"] },
+   ```
+
+   - `gallery`의 **첫 번째 사진**이 카드 대표 사진으로 보입니다.
+   - 카드를 클릭하면 그 품목의 `gallery` 사진 전체가 모달 창에 그리드로 펼쳐집니다.
+     (사진을 나중에 계속 추가해도 배열에 경로만 더 넣으면 자동으로 그리드에 반영돼요.)
+   - `gallery`가 없는 품목은 지금처럼 "사진 자리" placeholder가 그대로 나옵니다.
+   - 품목이 8개면 사진도 8세트까지 준비하면 좋고, 일부만 있어도 문제없습니다.
 
 사진 용량이 크면 로딩이 느려지니, 카카오톡/네이버로 전송받은 사진 정도의
 용량(보통 1MB 이하)이면 충분합니다.
