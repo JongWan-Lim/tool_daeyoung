@@ -419,7 +419,26 @@
         var item = response.v2.addresses[0];
         var coords = new naver.maps.LatLng(item.y, item.x);
         naverMap.setCenter(coords);
-        new naver.maps.Marker({ position: coords, map: naverMap, title: CONFIG.storeName });
+
+        var marker = new naver.maps.Marker({ position: coords, map: naverMap, title: CONFIG.storeName });
+
+        // 마커 위에 상호명 라벨을 붙이고, 클릭하면 네이버 지도(플레이스)로 이동
+        var infoWindow = new naver.maps.InfoWindow({
+          content:
+            '<a href="' + CONFIG.naverMapUrl + '" target="_blank" rel="noopener" ' +
+            'style="display:inline-block;padding:7px 12px;font-size:13px;font-weight:700;' +
+            'color:#1f2933;text-decoration:none;white-space:nowrap;">' +
+            CONFIG.storeName + ' ↗</a>',
+          borderWidth: 0,
+          backgroundColor: "transparent",
+          disableAnchor: true,
+          pixelOffset: new naver.maps.Point(0, -8),
+        });
+        infoWindow.open(naverMap, marker);
+
+        naver.maps.Event.addListener(marker, "click", function () {
+          window.open(CONFIG.naverMapUrl, "_blank", "noopener");
+        });
       });
     }
   }
